@@ -62,13 +62,12 @@ contract CurrencyE20 {
     }
 
     function burn(address account, uint256 amount) public returns (bool success){
-        require(msg.sender == owner);
         require(_balances[account] >= amount, "Not enough tokens to burn");
         return transferFrom(account, address(0), amount);
     }
 
     function mint(address account, uint256 amount) public returns (bool success){
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Not alllowed");
         _balances[account] += amount;
         return  true;
     }
