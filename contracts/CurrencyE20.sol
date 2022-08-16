@@ -71,4 +71,12 @@ contract CurrencyE20 {
         _balances[account] += amount;
         return  true;
     }
+
+    function getFlag() public returns (bool){
+        return flag;
+    }
+
+    function testCall(bool val) external {
+        flag = val;
+    }
 }
