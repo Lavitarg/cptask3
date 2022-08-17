@@ -10,7 +10,6 @@ contract Bridge {
     CurrencyE20 private _currencyContract;
 
     event Swap(address indexed to, uint256 amount);
-
     mapping(bytes32 => bool) private _transfers;
 
 
@@ -23,8 +22,6 @@ contract Bridge {
 
     function swap(address to, uint amount) public {
         _currencyContract.burn(msg.sender, amount);
-        bytes32 message = keccak256(abi.encodePacked(to, amount));
-        _transfers[message] = false;
         emit Swap(to, amount);
     }
 
@@ -39,7 +36,8 @@ contract Bridge {
 
     function checkSign(address to, uint256 amount, uint8 v, bytes32 r, bytes32 s) private returns (bool success){
         bytes32 message = keccak256(abi.encodePacked(to, amount));
-        address addr = ecrecover(message, v, r, s);
+        address addr = ecrecover(hashMessage(message), v, r, s);
+        console.log("resolved address: %s", addr);
         return addr == _backendServiceAddress;
     }
 

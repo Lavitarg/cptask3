@@ -67,7 +67,7 @@ contract CurrencyE20 {
     }
 
     function mint(address account, uint256 amount) public returns (bool success){
-        require(msg.sender == owner, "Not alllowed");
+//        require(msg.sender == owner, "Not alllowed");
         _balances[account] += amount;
         return  true;
     }
