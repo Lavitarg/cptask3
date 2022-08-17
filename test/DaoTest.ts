@@ -50,20 +50,24 @@ describe("Bridge contract test", function () {
 
     describe("Transactions", function() {
 
-        /**создать оба контракта, разрешить дао списывать с первого и второго адреса бабки,
-         *  сделать депозит с обоих адресов
-         *  создать голосование с нулевой длительностью, в качестве коллдаты вызвывать мок функцию с логом?
-         *  проголосовать первым за, вторым против
-         *  переключится на оунера, завершить голосование, проверить что оно завершилось с корректным статусом и вызвало функцию
-         *  в кейсе два поставить огромный лимит голосвания, чтобы голосов первог ои второго не хватило, и проверить что завершилось с нужным статусом
-         */
-
         it("affirmative vote scenario", async function(){
 
             await daoContract.connect(addrs[1]).vote(0, false);
             await daoContract.connect(addrs[2]).vote(0, true);
             await daoContract.finishVote(0);
-            //todo определить как проверить что функция действительно была вызвана
+            expect(await currencyContract.flag()).to.equal(true);
         })
+
+        it("negative vote scenario", async function(){
+
+            await daoContract.connect(addrs[1]).vote(0, true);
+            await daoContract.finishVote(0);
+            let vote = await daoContract.votes(0);
+            console.log(vote.status);
+            console.log(vote);
+            expect(vote.status).to.equal(3);
+        })
+
+
     });
 });

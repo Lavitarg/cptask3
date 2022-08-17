@@ -8,6 +8,7 @@ contract CurrencyE20 {
 
     uint256 public totalSupply = 1000;
     address public owner;
+    bool public flag;
 
     // A mapping is a key/value map. Here we store each account balance.
     mapping(address => uint256) private _balances;
@@ -70,10 +71,6 @@ contract CurrencyE20 {
         require(msg.sender == owner, "Not alllowed");
         _balances[account] += amount;
         return  true;
-    }
-
-    function getFlag() public returns (bool){
-        return flag;
     }
 
     function testCall(bool val) external {

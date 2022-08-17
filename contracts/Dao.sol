@@ -60,24 +60,29 @@ contract Dao {
         } else {
             currentVote.negativeCount += balances[msg.sender];
         }
+        votes[voteId] = currentVote;
     }
 
     function finishVote(uint voteId) public {
         Vote memory currentVote = votes [voteId];
+        console.log("finish vote func, current vote = %s", currentVote.negativeCount);
         require(currentVote.status == VoteStatus.Active, "Incorrect vote id");
         require(block.timestamp >= currentVote.dateEnd, "Too early to finish vote");
         if (currentVote.negativeCount + currentVote.affirmativeCount < _minimumQuorum) {
             currentVote.status = VoteStatus.Cancelled;
+            console.log("Cancelling vote, voteid = %d, ncount = %d, pcount = %d", voteId, currentVote.negativeCount, currentVote.affirmativeCount);
         }
         else if (currentVote.affirmativeCount > currentVote.negativeCount){
-            (bool success, ) = currentVote.recipient.call{value: 0}(currentVote.signature);
+            (bool success, ) =  currentVote.recipient.call{value: 0}(currentVote.signature);
             require(success,"func call failed");
             currentVote.status = VoteStatus.FinishedPositive;
+            console.log("finishing vote positive, voteid = %d, ncount = %d, pcount = %d", voteId, currentVote.negativeCount, currentVote.affirmativeCount);
         }
         else {
-            currentVote.status = VoteStatus.FinishedNegative;
-
+            console.log("finishing vote negative, voteid = %d, ncount = %d, pcount = %d", voteId, currentVote.negativeCount, currentVote.affirmativeCount);
+        currentVote.status = VoteStatus.FinishedNegative;
         }
+        votes[voteId] = currentVote;
     }
 
     function withdraw(uint amount) public {
